@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2024 The nix-gerrit Authors <git@lukegb.com>
+# SPDX-License-Identifier: MIT
+
+# Not using common --repository_cache because Gerrit's bazelrc overrides this...
+build --action_env=SSL_CERT_FILE
+build --action_env=GERRIT_CACHE_HOME
+build --tool_java_runtime_version=local_jdk --java_runtime_version=local_jdk
+build --workspace_status_command="cat .version"
+
+# Disable errorprone
+build --javacopt="-XepDisableAllChecks"

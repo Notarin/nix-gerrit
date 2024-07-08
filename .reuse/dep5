@@ -1,0 +1,18 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: nix-gerrit
+Upstream-Contact: The nix-gerrit Authors <git@lukegb.com>
+Source: https://git.lix.systems/lukegb/nix-gerrit
+
+Files: AUTHORS
+Copyright: The nix-gerrit Authors <git@lukegb.com>
+License: MIT
+
+# Computer generated files
+Files: flake.lock
+Copyright: NONE
+License: MIT
+
+# Patches are licensed under the same as their parent
+Files: gerrit/*.patch plugins/code-owners/*.patch
+Copyright: The Android Open Source Project
+License: Apache-2.0
