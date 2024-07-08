@@ -14,9 +14,20 @@
   in {
     packages = forAllSystems (system: let
       pkgSet = import ./default.nix { pkgs = nixpkgs.legacyPackages."${system}"; };
-    in pkgSet // { default = pkgSet.gerrit; });
+    in {
+      default = pkgSet.gerrit;
+      inherit (pkgSet) gerrit;
+      inherit (pkgSet.plugins) oauth code-owners;
+    });
+
     devShells = forAllSystems (system: {
       default = import ./shell.nix { pkgs = nixpkgs.legacyPackages."${system}"; };
     });
+
+    overlays.default = final: prev: {
+      gerritPkgs = import ./default.nix { pkgs = final; };
+      gerrit = final.gerritPkgs.gerrit;
+      gerritPlugins = final.gerritPkgs.plugins;
+    };
   };
 }
