@@ -82,7 +82,9 @@ let
         bazelPhase = "build";
 
         inherit deps;
-        passthru.shell = shell;
+        passthru = (base.passthru or {}) // {
+          inherit shell;
+        };
 
         nativeBuildInputs = (base.nativeBuildInputs or []) ++ [
           coreutils
