@@ -47,6 +47,8 @@ in
 
     ./gerrit-cl-431977-bump-sshd.patch
     ./gerrit-cl-431977-part-2-bump-bouncycastle.patch
+
+    ./jgit-parallel-object-counting.patch
   ];
 
   nativeBuildInputs = [

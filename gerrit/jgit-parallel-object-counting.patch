@@ -1,0 +1,62 @@
+diff --git a/modules/jgit/org.eclipse.jgit/src/org/eclipse/jgit/internal/storage/file/WindowCursor.java b/modules/jgit/org.eclipse.jgit/src/org/eclipse/jgit/internal/storage/file/WindowCursor.java
+index 01f514b93..c9888657a 100644
+--- a/modules/jgit/org.eclipse.jgit/src/org/eclipse/jgit/internal/storage/file/WindowCursor.java
++++ b/modules/jgit/org.eclipse.jgit/src/org/eclipse/jgit/internal/storage/file/WindowCursor.java
+@@ -18,6 +18,7 @@
+ import java.util.List;
+ import java.util.Optional;
+ import java.util.Set;
++import java.util.concurrent.atomic.AtomicInteger;
+ import java.util.zip.DataFormatException;
+ import java.util.zip.Inflater;
+ 
+@@ -166,10 +167,49 @@ public LocalObjectToPack newObjectToPack(AnyObjectId objectId, int type) {
+ 		return new LocalObjectToPack(objectId, type);
+ 	}
+ 
++	/* Above this number of objects, perform this counting in parallel. */
++	private static final int OBJECTS_TO_MULTITHREAD = 10_000;
++
+ 	@Override
+ 	public void selectObjectRepresentation(PackWriter packer,
+ 			ProgressMonitor monitor, Iterable<ObjectToPack> objects)
+ 			throws IOException, MissingObjectException {
++		if (objects instanceof Collection<ObjectToPack>) {
++			// If it isn't a collection, we can't tell how many objects there are.
++			Collection<ObjectToPack> sizedObjects = (Collection<ObjectToPack>)objects;
++			if (sizedObjects.size() >= OBJECTS_TO_MULTITHREAD) {
++				// Where we're going, we don't need single-threaded.
++				AtomicInteger counter = new AtomicInteger();
++				try {
++					sizedObjects.parallelStream()
++						.forEach(otp -> {
++							try {
++								// TODO: maybe creating a new WindowCursor each time is expensive?
++								db.selectObjectRepresentation(packer, otp, new WindowCursor(db));
++							} catch (IOException e) {
++								throw new RuntimeException(e);
++							}
++							if (counter.incrementAndGet() >= OBJECTS_TO_MULTITHREAD) {
++								int rem = counter.getAndSet(0);
++								if (rem >= OBJECTS_TO_MULTITHREAD) {
++									synchronized (monitor) {
++										monitor.update(rem);
++									}
++								} else {
++									counter.addAndGet(rem);
++								}
++							}
++						});
++					monitor.update(counter.get());
++				} catch (RuntimeException e) {
++					if (e.getCause() != null && e.getCause() instanceof IOException) throw (IOException)e.getCause();
++					throw e;
++				}
++				return;
++			}
++		}
++
++		// Otherwise, single-threaded mode.
+ 		for (ObjectToPack otp : objects) {
+ 			db.selectObjectRepresentation(packer, otp, this);
+ 			monitor.update(1);
