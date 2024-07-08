@@ -46,10 +46,27 @@ nix build '.#plugins.code-owners'
 
 ## Building everything at once
 
-Everything in the tree can be built at once using the `ci` expressiong:
+Everything in the tree can be built at once using the `ci` expression:
 
 ```
 nix-build -A ci
 # or
 nix build '.#ci'
+```
+
+## Development environment
+
+A development shell, containing enough stuff to build Gerrit on NixOS without too much faff is available:
+
+```
+nix-shell
+# note that nix develop is currently broken
+```
+
+You can then build/test/etc inside a Gerrit Git checkout:
+
+```
+cd ~/src/gerrit
+bazel build //:release
+java -jar bazel-bin/release.war
 ```

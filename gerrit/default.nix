@@ -59,6 +59,12 @@ in
     unzip
   ];
 
+  shellHook = ''
+    bazelFlagsArray+=(
+      '--javacopt="-XepDisableAllChecks"'
+    )
+  '';
+
   prePatch = ''
     rm .bazelversion
 
