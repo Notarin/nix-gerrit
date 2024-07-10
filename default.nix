@@ -14,11 +14,13 @@ lib.makeScope pkgs.newScope (self: {
   plugins = {
     code-owners = self.callPackage ./plugins/code-owners { };
     oauth = self.callPackage ./plugins/oauth { };
+    metrics-reporter-prometheus = self.callPackage ./plugins/metrics-reporter-prometheus { };
   };
 
   ci = pkgs.linkFarm "gerrit-ci" [
     { name = "gerrit"; path = self.gerrit; }
     { name = "code-owners.jar"; path = self.plugins.code-owners; }
     { name = "oauth.jar"; path = self.plugins.oauth; }
+    { name = "metrics-reporter-prometheus.jar"; path = self.plugins.metrics-reporter-prometheus; }
   ];
 })
