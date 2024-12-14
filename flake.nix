@@ -16,8 +16,9 @@
       pkgSet = import ./default.nix { pkgs = nixpkgs.legacyPackages."${system}"; };
     in {
       default = pkgSet.gerrit;
-      inherit (pkgSet) gerrit;
+      inherit (pkgSet) gerrit gerrit_3_11;
       inherit (pkgSet.plugins) oauth code-owners metrics-reporter-prometheus;
+      inherit (pkgSet) plugins_3_11;
     });
 
     devShells = forAllSystems (system: {
