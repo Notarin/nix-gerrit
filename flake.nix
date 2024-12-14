@@ -17,7 +17,7 @@
     in {
       default = pkgSet.gerrit;
       inherit (pkgSet) gerrit;
-      inherit (pkgSet.plugins) oauth code-owners;
+      inherit (pkgSet.plugins) oauth code-owners metrics-reporter-prometheus;
     });
 
     devShells = forAllSystems (system: {
