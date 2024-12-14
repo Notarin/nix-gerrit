@@ -11,7 +11,7 @@ buildGerritBazelPlugin rec {
     rev = "f2ee1de665281596ae300144243fcf94bf6f1f7d";
     hash = "sha256-iUFzSXKIKBdZBZMpZiejkEEXXI20wTJQRYkufc/YjOM=";
   };
-  depsHash = "sha256-hxnQlzzVQ15fyVo613FOsHlZZgOL1lBKOgqEGBoc7To=";
+  depsHash = "sha256-+X3d9KL3gR0RucJU4M8cq9Tnw9zyeVNdDWjzT6AndGM=";
   postOverlayPlugin = ''
     cp "${src}/external_plugin_deps.bzl" "$out/plugins/external_plugin_deps.bzl"
   '';
