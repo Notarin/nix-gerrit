@@ -17,7 +17,7 @@ let
 in
 (buildBazelPackageNG rec {
   pname = "gerrit";
-  version = "3.10.0";
+  version = "3.10.3";
 
   bazel = bazel_7;
 
@@ -26,7 +26,7 @@ in
     rev = "v${version}";
     fetchSubmodules = true;
     deepClone = true;
-    hash = "sha256-FpKuzityHuHNYBIOL8YUjCLlkuVBfxjvHECb26NsZNE=";
+    hash = "sha256-yp0LsqauIF8k/aCFFR2uYkeBNmp0E3lqpRSDm82dC3E=";
   }).overrideAttrs (_: {
     env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
       pushd "$dir" >/dev/null
@@ -38,7 +38,7 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-eX26Bjm7GvzywYeew3705dIwM1ducJw3LsjEYPLn6AM=";
+  depsHash = "sha256-Pq04IfyYnEYDbvnv3P8SDp3ONPYS8r3dipV5wwRaudM=";
 
   patches = [
     ./0001-Syntax-highlight-nix.patch
