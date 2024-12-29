@@ -38,15 +38,15 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-Pq04IfyYnEYDbvnv3P8SDp3ONPYS8r3dipV5wwRaudM=";
+  depsHash = "sha256-W2lbytrDZP5PqdO+cG3LZvEP2vVj8c+XA1hnptML2uc=";
 
   patches = [
     ./0001-Syntax-highlight-nix.patch
     ./0002-Syntax-highlight-rules.pl.patch
     ./0003-Add-titles-to-CLs-over-HTTP.patch
 
-    ./gerrit-cl-431977-bump-sshd.patch
-    ./gerrit-cl-431977-part-2-bump-bouncycastle.patch
+    # sshd: 2.14.0
+    ./bump-sshd-to-2_14_0.patch
   ];
 
   nativeBuildInputs = [
