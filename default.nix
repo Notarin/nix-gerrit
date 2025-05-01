@@ -7,13 +7,13 @@
 }:
 let
   depsHashes = {
-    "3_10" = {
-      "oauth" = "sha256-Jkk+P18U5udbcFjqte08hPoYQWiQbRa+0bvP843vtFU=";
-      "metric-reporter-prometheus" = "sha256-BEi8hBFMvmSsw6o0PvgUZpHSD1u17eq7AkHRcLY2bSk=";
-    };
     "3_11" = {
       "oauth" = "sha256-F8YkLplNT+yystFnRAUJyBJxCojzS8ZX/N/ULK0sBjQ=";
       "metric-reporter-prometheus" = "sha256-R86Qk//e/gXi6yCd1+KaiuJNU30nGgB8iNH0VTAzOYE=";
+    };
+    "3_12" = {
+      "oauth" = "sha256-Fa8Ty2SWFEXuUrRz+zQwIfRjbfal4QP8RV4T5umRQ9E=";
+      "metric-reporter-prometheus" = "sha256-Runf9Uy41ouHpG1n5xxPEP6CJevy9TP82gdvHNtD6Og=";
     };
   };
   mkPluginSet = { self, depsHashes, buildGerritBazelPlugin }: {
@@ -32,29 +32,29 @@ let
 in
 lib.makeScope pkgs.newScope (self: {
   buildBazelPackageNG = self.callPackage ./buildBazelPackageNG { };
-  inherit (self.callPackage ./gerrit { }) gerrit_3_10 gerrit_3_11;
+  inherit (self.callPackage ./gerrit { }) gerrit_3_11 gerrit_3_12;
 
-  buildGerrit310BazelPlugin = self.callPackage ./plugins/builder.nix { 
-    gerrit = self.gerrit_3_10;
-  };
   buildGerrit311BazelPlugin = self.callPackage ./plugins/builder.nix {
     gerrit = self.gerrit_3_11;
   };
-
-  plugins_3_10 = mkPluginSet { 
-    inherit self;
-    depsHashes = depsHashes."3_10";
-    buildGerritBazelPlugin = self.buildGerrit310BazelPlugin;
+  buildGerrit312BazelPlugin = self.callPackage ./plugins/builder.nix {
+    gerrit = self.gerrit_3_12;
   };
+
   plugins_3_11 = mkPluginSet { 
     inherit self;
     depsHashes = depsHashes."3_11";
     buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
   };
+  plugins_3_12 = mkPluginSet { 
+    inherit self;
+    depsHashes = depsHashes."3_12";
+    buildGerritBazelPlugin = self.buildGerrit312BazelPlugin;
+  };
 
-  buildGerritBazelPlugin = self.buildGerrit310BazelPlugin;
-  gerrit = self.gerrit_3_10;
-  plugins = self.plugins_3_10;
+  buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
+  gerrit = self.gerrit_3_11;
+  plugins = self.plugins_3_11;
 
   ci = pkgs.linkFarm "gerrit-${self.gerrit.version}-ci" [
     { name = "gerrit"; path = self.gerrit; }
