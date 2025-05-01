@@ -8,8 +8,8 @@
 let
   depsHashes = {
     "3_11" = {
-      "oauth" = "sha256-F8YkLplNT+yystFnRAUJyBJxCojzS8ZX/N/ULK0sBjQ=";
-      "metric-reporter-prometheus" = "sha256-R86Qk//e/gXi6yCd1+KaiuJNU30nGgB8iNH0VTAzOYE=";
+      "oauth" = "sha256-ipqfQcQ35u2ESgyzKDMXZiuO7ybrmQrsOL6tZW9ypdM=";
+      "metric-reporter-prometheus" = "sha256-9e8ACYoqp6VVJ60r055VN++Q9Rn/1OL5KnKtR3gv3tc=";
     };
     "3_12" = {
       "oauth" = "sha256-7UuSmVxeGGJjXXsNN70UfXZyM3lsU28acxy8JAuzP1s=";

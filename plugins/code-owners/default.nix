@@ -5,13 +5,13 @@
 
 buildGerritBazelPlugin rec {
   name = "code-owners";
-  version = "7de40d8";
+  version = "fb04a18";
   src = fetchgit {
     url = "https://gerrit.googlesource.com/plugins/code-owners";
-    rev = "7de40d8b30e55eb64316b6fc3d0d00da9caddade";
-    hash = "sha256-0sLwUcG9RN1o9vZGW8ErwL7UgJapgYoo8XMGsWLO25Q=";
+    rev = "fb04a189c603bf473f3c8413a14b4c10641944c2";
+    hash = "sha256-tMKSR5NgJcYY7tmOjzl7GQJPzvBb0PuUf2DMjaGtIoI=";
   };
   patches = [
-    ./using-usernames.patch
+    # ./using-usernames.patch
   ];
 }
