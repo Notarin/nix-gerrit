@@ -8,12 +8,12 @@
 let
   depsHashes = {
     "3_10" = {
-      "oauth" = "sha256-GukI0DN47YjRJT3WdDr+nVoj2sOJoWsmJQs4Lqhr1e8=";
-      "metric-reporter-prometheus" = "sha256-eKm2RJ7KO1cSh7+27iZQubkB64Sjs7+5VCXj99JKGkI=";
+      "oauth" = "sha256-Jkk+P18U5udbcFjqte08hPoYQWiQbRa+0bvP843vtFU=";
+      "metric-reporter-prometheus" = "sha256-BEi8hBFMvmSsw6o0PvgUZpHSD1u17eq7AkHRcLY2bSk=";
     };
     "3_11" = {
-      "oauth" = "sha256-Xx607OSqlRMr8mlkVhfXiqM9hWcJqx4dmpf+cm10uSA=";
-      "metric-reporter-prometheus" = "sha256-CzhpAN9Jh9E6GV+/UzVnNn56bOld8evdWcpkr/eFtag=";
+      "oauth" = "sha256-F8YkLplNT+yystFnRAUJyBJxCojzS8ZX/N/ULK0sBjQ=";
+      "metric-reporter-prometheus" = "sha256-R86Qk//e/gXi6yCd1+KaiuJNU30nGgB8iNH0VTAzOYE=";
     };
   };
   mkPluginSet = { self, depsHashes, buildGerritBazelPlugin }: {

@@ -38,7 +38,7 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-AXWtkFOmx4IylWnPC1vdkoAbpKBQ46Nf7zLB9V1ieb0=";
+  depsHash = "sha256-Bn4DD65SvBPY3tMs+HCpyOk+bCSWpBbsO1ciDBAWL+A=";
 
   patches = [
     ./0002-Syntax-highlight-rules.pl.patch
