@@ -84,6 +84,11 @@ in
 
   extraCacheInstall = ''
     cp -R $GERRIT_CACHE_HOME $out/gerrit-cache
+    # lcov_merger_tools is from bazel (and thus depends on nixpkgs
+    # version, breaking hashes), but isn't actually needed for the
+    # build. So let's remove that specific path.
+    lcov_merger_tools_path=$(grep -rl all_lcov_merger_tools_deploy.jar $out | head -n1)
+    rm -r "$(dirname "$lcov_merger_tools_path")"
   '';
 
   extraBuildSetup = ''

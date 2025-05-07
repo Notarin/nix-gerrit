@@ -38,7 +38,7 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-Qhuap3/8cL7R9B50mngfKDTq7+3OBBofEP0VnXORuvY=";
+  depsHash = "sha256-wTV2pdp7GrKwDwIEBrkk2hwRF9wmymeUxCkaIIQjA8A=";
 
   patches = [
     ./0002-Syntax-highlight-rules.pl.patch
@@ -84,6 +84,11 @@ in
 
   extraCacheInstall = ''
     cp -R $GERRIT_CACHE_HOME $out/gerrit-cache
+    # lcov_merger_tools is from bazel (and thus depends on nixpkgs
+    # version, breaking hashes), but isn't actually needed for the
+    # build. So let's remove that specific path.
+    lcov_merger_tools_path=$(grep -rl all_lcov_merger_tools_deploy.jar $out | head -n1)
+    rm -r "$(dirname "$lcov_merger_tools_path")"
   '';
 
   extraBuildSetup = ''

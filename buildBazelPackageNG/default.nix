@@ -67,7 +67,7 @@ let
           runHook preInstall
 
           mkdir $out
-          echo "${bazel.version}" > $out/bazel_version
+          echo "${lib.head (lib.splitVersion bazel.version)}" > $out/bazel_version
           cp -R $NIXBAZEL_CACHE_ROOT/repository-cache $out/repository-cache
           ${extraCacheInstall}
 
