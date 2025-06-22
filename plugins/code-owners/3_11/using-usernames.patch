@@ -6,10 +6,10 @@ Date:   Wed Sep 21 03:15:38 2022 +0100
     
     Change-Id: I3ba8527f66216d08e555a6ac4451fe0d1e090de5
 
-diff --git a/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java b/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
-index 70009591..6dc596c9 100644
---- a/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
-+++ b/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
+diff --git c/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java i/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
+index 2f55c21d..776fdae8 100644
+--- c/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
++++ i/java/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolver.java
 @@ -17,6 +17,8 @@ package com.google.gerrit.plugins.codeowners.backend;
  import static com.google.common.base.Preconditions.checkState;
  import static com.google.common.collect.ImmutableMap.toImmutableMap;
@@ -90,20 +90,21 @@ index 70009591..6dc596c9 100644
    }
  
    /**
-@@ -361,6 +379,12 @@ public class CodeOwnerResolver {
-               "cannot resolve code owner email %s: no account with this email exists",
-               CodeOwnerResolver.ALL_USERS_WILDCARD));
+@@ -362,6 +380,13 @@ public class CodeOwnerResolver {
+                   "cannot resolve code owner email %s: no account with this email exists",
+                   CodeOwnerResolver.ALL_USERS_WILDCARD)));
      }
 +    if (codeOwnerReference.email().startsWith(GROUP_PREFIX)) {
 +      return OptionalResultWithMessages.createEmpty(
-+          String.format(
-+              "cannot resolve code owner email %s: this is a group",
-+              codeOwnerReference.email()));
++          DebugMessage.createMessage(
++              String.format(
++                  "cannot resolve code owner email %s: this is a group",
++                  codeOwnerReference.email())));
 +    }
  
-     ImmutableList.Builder<String> messageBuilder = ImmutableList.builder();
+     ImmutableList.Builder<DebugMessage> messageBuilder = ImmutableList.builder();
      AtomicBoolean ownedByAllUsers = new AtomicBoolean(false);
-@@ -405,9 +429,53 @@ public class CodeOwnerResolver {
+@@ -406,9 +431,53 @@ public class CodeOwnerResolver {
        ImmutableMultimap<CodeOwnerReference, CodeOwnerAnnotation> annotations) {
      requireNonNull(codeOwnerReferences, "codeOwnerReferences");
  
@@ -157,7 +158,7 @@ index 70009591..6dc596c9 100644
              .filter(filterOutAllUsersWildCard(ownedByAllUsers))
              .collect(toImmutableSet());
  
-@@ -442,7 +510,8 @@ public class CodeOwnerResolver {
+@@ -443,7 +512,8 @@ public class CodeOwnerResolver {
      ImmutableMap<String, CodeOwner> codeOwnersByEmail =
          accountsByEmail.map(mapToCodeOwner()).collect(toImmutableMap(Pair::key, Pair::value));
  
@@ -167,7 +168,7 @@ index 70009591..6dc596c9 100644
        hasUnresolvedCodeOwners.set(true);
      }
  
-@@ -456,7 +525,9 @@ public class CodeOwnerResolver {
+@@ -457,7 +527,9 @@ public class CodeOwnerResolver {
          cachedCodeOwnersByEmail.entrySet().stream()
              .filter(e -> e.getValue().isPresent())
              .map(e -> Pair.of(e.getKey(), e.getValue().get()));
@@ -178,7 +179,7 @@ index 70009591..6dc596c9 100644
          .forEach(
              p -> {
                ImmutableSet.Builder<CodeOwnerAnnotation> annotationBuilder = ImmutableSet.builder();
-@@ -467,6 +538,12 @@ public class CodeOwnerResolver {
+@@ -468,6 +540,12 @@ public class CodeOwnerResolver {
                annotationBuilder.addAll(
                    annotations.get(CodeOwnerReference.create(ALL_USERS_WILDCARD)));
  
@@ -191,19 +192,19 @@ index 70009591..6dc596c9 100644
                if (!codeOwnersWithAnnotations.containsKey(p.value())) {
                  codeOwnersWithAnnotations.put(p.value(), new HashSet<>());
                }
-@@ -570,7 +647,7 @@ public class CodeOwnerResolver {
+@@ -572,7 +650,7 @@ public class CodeOwnerResolver {
      }
  
-     messages.add(String.format("email %s has no domain", email));
+     messages.add(DebugMessage.createMessage(String.format("email %s has no domain", email)));
 -    return false;
 +    return true;  // TVL: we allow domain-less strings which are treated as usernames.
    }
  
    /**
-@@ -585,11 +662,29 @@ public class CodeOwnerResolver {
+@@ -587,11 +665,29 @@ public class CodeOwnerResolver {
     */
    private ImmutableMap<String, Collection<ExternalId>> lookupExternalIds(
-       ImmutableList.Builder<String> messages, ImmutableSet<String> emails) {
+       ImmutableList.Builder<DebugMessage> messages, ImmutableSet<String> emails) {
 +    String[] actualEmails = emails.stream()
 +      .filter(email -> email.contains("@"))
 +      .toArray(String[]::new);
@@ -233,35 +234,36 @@ index 70009591..6dc596c9 100644
            .forEach(
                email -> {
                  transientCodeOwnerCache.cacheNonResolvable(email);
-@@ -598,7 +693,7 @@ public class CodeOwnerResolver {
-                         "cannot resolve code owner email %s: no account with this email exists",
-                         email));
+@@ -602,7 +698,7 @@ public class CodeOwnerResolver {
+                             "cannot resolve code owner email %s: no account with this email exists",
+                             email)));
                });
 -      return extIdsByEmail;
 +      return extIds;
      } catch (IOException e) {
        throw newInternalServerError(
            String.format("cannot resolve code owner emails: %s", emails), e);
-@@ -815,6 +910,15 @@ public class CodeOwnerResolver {
-                 user != null ? user.getLoggableName() : currentUser.get().getLoggableName()));
+@@ -831,6 +927,16 @@ public class CodeOwnerResolver {
+                     user != null ? user.getLoggableName() : currentUser.get().getLoggableName())));
          return true;
        }
 +      if (!email.contains("@")) {
 +        // the email is the username of the account, or a group, or something else.
 +        messages.add(
-+            String.format(
-+                "account %s is visible to user %s",
-+                accountState.account().id(),
-+                user != null ? user.getLoggableName() : currentUser.get().getLoggableName()));
++            DebugMessage.createMessage(
++                String.format(
++                    "account %s is visible to user %s",
++                    accountState.account().id(),
++                    user != null ? user.getLoggableName() : currentUser.get().getLoggableName())));
 +        return true;
 +      }
  
        if (user != null) {
          if (user.hasEmailAddress(email)) {
-diff --git a/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java b/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
+diff --git c/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java i/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
 index 5f350998..7977ba55 100644
---- a/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
-+++ b/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
+--- c/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
++++ i/java/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParser.java
 @@ -149,7 +149,8 @@ public class FindOwnersCodeOwnerConfigParser implements CodeOwnerConfigParser {
      private static final String EOL = "[\\s]*(#.*)?$"; // end-of-line
      private static final String GLOB = "[^\\s,=]+"; // a file glob
@@ -272,11 +274,11 @@ index 5f350998..7977ba55 100644
      private static final String EMAIL_LIST =
          "(" + EMAIL_OR_STAR + "(" + COMMA + EMAIL_OR_STAR + ")*)";
  
-diff --git a/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java b/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
-index 7ec92959..59cf7e05 100644
---- a/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
-+++ b/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
-@@ -424,7 +424,7 @@ public abstract class AbstractFileBasedCodeOwnerBackendTest extends AbstractCode
+diff --git c/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java i/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
+index 52813912..84d60295 100644
+--- c/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
++++ i/javatests/com/google/gerrit/plugins/codeowners/backend/AbstractFileBasedCodeOwnerBackendTest.java
+@@ -423,7 +423,7 @@ public abstract class AbstractFileBasedCodeOwnerBackendTest extends AbstractCode
                .commit()
                .parent(head)
                .message("Add invalid test code owner config")
@@ -285,10 +287,10 @@ index 7ec92959..59cf7e05 100644
      }
  
      // Try to update the code owner config.
-diff --git a/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java b/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
-index 6171aca9..37699012 100644
---- a/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
-+++ b/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
+diff --git c/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java i/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
+index 7fc6cece..8699dbb6 100644
+--- c/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
++++ i/javatests/com/google/gerrit/plugins/codeowners/backend/CodeOwnerResolverTest.java
 @@ -24,8 +24,10 @@ import com.google.gerrit.acceptance.TestAccount;
  import com.google.gerrit.acceptance.TestMetricMaker;
  import com.google.gerrit.acceptance.config.GerritConfig;
@@ -308,8 +310,8 @@ index 6171aca9..37699012 100644
    @Inject private ExternalIdNotes.Factory externalIdNotesFactory;
    @Inject private TestMetricMaker testMetricMaker;
    @Inject private ExternalIdFactory externalIdFactory;
-@@ -112,6 +115,18 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
-         .contains(String.format("account %s is visible to user %s", admin.id(), admin.username()));
+@@ -114,6 +117,18 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
+             String.format("account %s is visible to user %s", admin.id(), admin.username()));
    }
  
 +  @Test
@@ -327,7 +329,7 @@ index 6171aca9..37699012 100644
    @Test
    public void cannotResolveCodeOwnerReferenceForStarAsEmail() throws Exception {
      OptionalResultWithMessages<CodeOwner> result =
-@@ -127,6 +142,18 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
+@@ -128,6 +143,18 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
                  CodeOwnerResolver.ALL_USERS_WILDCARD));
    }
  
@@ -346,7 +348,7 @@ index 6171aca9..37699012 100644
    @Test
    public void resolveCodeOwnerReferenceForAmbiguousEmailIfOtherAccountIsInactive()
        throws Exception {
-@@ -397,6 +424,64 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
+@@ -398,6 +425,64 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
      assertThat(result.hasUnresolvedCodeOwners()).isFalse();
    }
  
@@ -411,7 +413,7 @@ index 6171aca9..37699012 100644
    @Test
    public void resolvePathCodeOwnersNonResolvableCodeOwnersAreFilteredOut() throws Exception {
      CodeOwnerConfig codeOwnerConfig =
-@@ -655,7 +740,7 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
+@@ -656,7 +741,7 @@ public class CodeOwnerResolverTest extends AbstractCodeOwnersTest {
          "domain example.com of email foo@example.org@example.com is allowed");
      assertIsEmailDomainAllowed(
          "foo@example.org", false, "domain example.org of email foo@example.org is not allowed");
@@ -420,11 +422,11 @@ index 6171aca9..37699012 100644
      assertIsEmailDomainAllowed(
          "foo@example.com@example.org",
          false,
-diff --git a/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java b/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
-index 260e635e..7aab99d0 100644
---- a/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
-+++ b/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
-@@ -158,16 +158,42 @@ public class FindOwnersCodeOwnerConfigParserTest extends AbstractCodeOwnerConfig
+diff --git c/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java i/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
+index 199dfc19..fa40fcf9 100644
+--- c/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
++++ i/javatests/com/google/gerrit/plugins/codeowners/backend/findowners/FindOwnersCodeOwnerConfigParserTest.java
+@@ -157,16 +157,42 @@ public class FindOwnersCodeOwnerConfigParserTest extends AbstractCodeOwnerConfig
                  codeOwnerConfigParser.parse(
                      TEST_REVISION,
                      CodeOwnerConfig.Key.create(project, "master", "/"),

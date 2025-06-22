@@ -16,8 +16,8 @@ let
       "metric-reporter-prometheus" = "sha256-v3T2/aBpQpOzqyA/OkJRadHU/x0qmdXVGg+NKnG+2Pg=";
     };
   };
-  mkPluginSet = { self, depsHashes, buildGerritBazelPlugin }: {
-    code-owners = self.callPackage ./plugins/code-owners {
+  mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
+    code-owners = self.callPackage ./plugins/code-owners/${variant} {
       inherit buildGerritBazelPlugin;
     };
     oauth = self.callPackage ./plugins/oauth {
@@ -44,11 +44,13 @@ lib.makeScope pkgs.newScope (self: {
   plugins_3_11 = mkPluginSet { 
     inherit self;
     depsHashes = depsHashes."3_11";
+    variant = "3_11";
     buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
   };
   plugins_3_12 = mkPluginSet { 
     inherit self;
     depsHashes = depsHashes."3_12";
+    variant = "3_12";
     buildGerritBazelPlugin = self.buildGerrit312BazelPlugin;
   };
 
