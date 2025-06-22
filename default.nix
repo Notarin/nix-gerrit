@@ -7,17 +7,17 @@
 }:
 let
   depsHashes = {
-    "3_10" = {
-      "oauth" = "sha256-Jkk+P18U5udbcFjqte08hPoYQWiQbRa+0bvP843vtFU=";
-      "metric-reporter-prometheus" = "sha256-BEi8hBFMvmSsw6o0PvgUZpHSD1u17eq7AkHRcLY2bSk=";
-    };
     "3_11" = {
-      "oauth" = "sha256-F8YkLplNT+yystFnRAUJyBJxCojzS8ZX/N/ULK0sBjQ=";
-      "metric-reporter-prometheus" = "sha256-R86Qk//e/gXi6yCd1+KaiuJNU30nGgB8iNH0VTAzOYE=";
+      "oauth" = "sha256-ipqfQcQ35u2ESgyzKDMXZiuO7ybrmQrsOL6tZW9ypdM=";
+      "metric-reporter-prometheus" = "sha256-9e8ACYoqp6VVJ60r055VN++Q9Rn/1OL5KnKtR3gv3tc=";
+    };
+    "3_12" = {
+      "oauth" = "sha256-7UuSmVxeGGJjXXsNN70UfXZyM3lsU28acxy8JAuzP1s=";
+      "metric-reporter-prometheus" = "sha256-v3T2/aBpQpOzqyA/OkJRadHU/x0qmdXVGg+NKnG+2Pg=";
     };
   };
-  mkPluginSet = { self, depsHashes, buildGerritBazelPlugin }: {
-    code-owners = self.callPackage ./plugins/code-owners {
+  mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
+    code-owners = self.callPackage ./plugins/code-owners/${variant} {
       inherit buildGerritBazelPlugin;
     };
     oauth = self.callPackage ./plugins/oauth {
@@ -32,29 +32,31 @@ let
 in
 lib.makeScope pkgs.newScope (self: {
   buildBazelPackageNG = self.callPackage ./buildBazelPackageNG { };
-  inherit (self.callPackage ./gerrit { }) gerrit_3_10 gerrit_3_11;
+  inherit (self.callPackage ./gerrit { }) gerrit_3_11 gerrit_3_12;
 
-  buildGerrit310BazelPlugin = self.callPackage ./plugins/builder.nix { 
-    gerrit = self.gerrit_3_10;
-  };
   buildGerrit311BazelPlugin = self.callPackage ./plugins/builder.nix {
     gerrit = self.gerrit_3_11;
   };
-
-  plugins_3_10 = mkPluginSet { 
-    inherit self;
-    depsHashes = depsHashes."3_10";
-    buildGerritBazelPlugin = self.buildGerrit310BazelPlugin;
+  buildGerrit312BazelPlugin = self.callPackage ./plugins/builder.nix {
+    gerrit = self.gerrit_3_12;
   };
+
   plugins_3_11 = mkPluginSet { 
     inherit self;
     depsHashes = depsHashes."3_11";
+    variant = "3_11";
     buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
   };
+  plugins_3_12 = mkPluginSet { 
+    inherit self;
+    depsHashes = depsHashes."3_12";
+    variant = "3_12";
+    buildGerritBazelPlugin = self.buildGerrit312BazelPlugin;
+  };
 
-  buildGerritBazelPlugin = self.buildGerrit310BazelPlugin;
-  gerrit = self.gerrit_3_10;
-  plugins = self.plugins_3_10;
+  buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
+  gerrit = self.gerrit_3_11;
+  plugins = self.plugins_3_11;
 
   ci = pkgs.linkFarm "gerrit-${self.gerrit.version}-ci" [
     { name = "gerrit"; path = self.gerrit; }
