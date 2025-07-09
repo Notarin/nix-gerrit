@@ -38,9 +38,10 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-wTV2pdp7GrKwDwIEBrkk2hwRF9wmymeUxCkaIIQjA8A=";
+  depsHash = "sha256-5bjU3/pOYhvMO1S5RqQc0VC3ecXirs+vIujOOhuTnLo=";
 
   patches = [
+    ./0001-Revert-Remove-net.i2p.crypto-eddsa.patch
     ./0002-Syntax-highlight-rules.pl.patch
     ./0003-Add-titles-to-CLs-over-HTTP.patch
   ];
