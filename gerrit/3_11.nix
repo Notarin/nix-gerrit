@@ -65,6 +65,8 @@ in
     rm .bazelversion
 
     ln -sf ${./bazelrc} user.bazelrc
+    # referencing $HOME is a bad idea and fails! https://git.lix.systems/the-distro/nix-gerrit/issues/11
+    substituteInPlace .bazelrc --replace-fail '~/.gerritcodereview' '$GERRIT_CACHE_HOME'
 
     ln -sf ${./workspace_overrides.bzl} workspace_overrides.bzl
     substituteInPlace WORKSPACE \
