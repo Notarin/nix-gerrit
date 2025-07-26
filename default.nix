@@ -12,8 +12,8 @@ let
       "metric-reporter-prometheus" = "sha256-9e8ACYoqp6VVJ60r055VN++Q9Rn/1OL5KnKtR3gv3tc=";
     };
     "3_12" = {
-      "oauth" = "sha256-7UuSmVxeGGJjXXsNN70UfXZyM3lsU28acxy8JAuzP1s=";
-      "metric-reporter-prometheus" = "sha256-v3T2/aBpQpOzqyA/OkJRadHU/x0qmdXVGg+NKnG+2Pg=";
+      "oauth" = "sha256-G4RvTAOERIXvgW+sACU4n6RG2ruToCfMFo9XEb5SlqE=";
+      "metric-reporter-prometheus" = "sha256-yKtgo6MXFfdAXfksQtLLUYgNoK6whW+pRQSOB/ymrz4=";
     };
   };
   mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
