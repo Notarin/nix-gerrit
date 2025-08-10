@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2024 The nix-gerrit Authors <git@lukegb.com>
 # SPDX-License-Identifier: MIT
 
-prePatchHooks+=(_setupLocalJavaRepo)
-shellHooks+=(_setupLocalJavaRepo)
+prePatchHooks+=(_setupLocalJavaRepo _setupIPv6Only)
+shellHooks+=(_setupLocalJavaRepo _setupIPv6Only)
 
 javaVersions=(11 17 21)
 javaPlatforms=(
@@ -18,4 +18,10 @@ _setupLocalJavaRepo() {
 			)
 		done
 	done
+}
+
+_setupIPv6Only() {
+	bazelGlobalFlagsArray+=(
+		--host_jvm_args=-Djava.net.preferIPv6Addresses=system
+	)
 }

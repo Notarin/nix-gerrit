@@ -57,8 +57,8 @@ let
         buildPhase = ''
           runHook preBuild
 
-          bazel sync --repository_cache=$NIXBAZEL_CACHE_ROOT/repository-cache $bazelFlags "''${bazelFlagsArray[@]}"
-          bazel build --repository_cache=$NIXBAZEL_CACHE_ROOT/repository-cache --nobuild $bazelFlags "''${bazelFlagsArray[@]}" $bazelTargetNames
+          bazel "''${bazelGlobalFlagsArray[@]}" sync --repository_cache=$NIXBAZEL_CACHE_ROOT/repository-cache $bazelFlags "''${bazelFlagsArray[@]}"
+          bazel "''${bazelGlobalFlagsArray[@]}" build --repository_cache=$NIXBAZEL_CACHE_ROOT/repository-cache --nobuild $bazelFlags "''${bazelFlagsArray[@]}" $bazelTargetNames
 
           runHook postBuild
         '';
@@ -94,7 +94,7 @@ let
           runHook preBuild
 
           ${extraBuildSetup}
-          bazel build --repository_cache=$deps/repository-cache $bazelFlags "''${bazelFlagsArray[@]}" $bazelTargetNames
+          bazel "''${bazelGlobalFlagsArray[@]}" build --repository_cache=$deps/repository-cache $bazelFlags "''${bazelFlagsArray[@]}" $bazelTargetNames
 
           runHook postBuild
         '';
@@ -103,7 +103,7 @@ let
           runHook preInstall
 
           ${builtins.concatStringsSep "\n" (lib.mapAttrsToList (target: outPath: lib.optionalString (outPath != null) ''
-            TARGET_OUTPUTS="$(bazel cquery --repository_cache=$deps/repository-cache $bazelFlags "''${bazelFlagsArray[@]}" --output=files "${target}")"
+            TARGET_OUTPUTS="$(bazel "''${bazelGlobalFlagsArray[@]}" cquery --repository_cache=$deps/repository-cache $bazelFlags "''${bazelFlagsArray[@]}" --output=files "${target}")"
             if [[ "$(echo "$TARGET_OUTPUTS" | wc -l)" -gt 1 ]]; then
               echo "Installing ${target}'s outputs ($TARGET_OUTPUTS) into ${outPath} as a directory"
               mkdir -p "${outPath}"
@@ -143,10 +143,13 @@ let
           _finalShellSetup() {
             # This is set up in postHook because we need to make sure that this shell hook happens
             # _after_ every other shell hook.
+            for arg in "''${bazelGlobalFlagsArray[@]}"; do
+              echo "common ''${arg}"
+            done > "$NIXBAZEL_SHELL_BAZELRC"
 
             for arg in "''${bazelFlagsArray[@]}"; do
               echo "common ''${arg}"
-            done > "$NIXBAZEL_SHELL_BAZELRC"
+            done >> "$NIXBAZEL_SHELL_BAZELRC"
           }
         '';
 
