@@ -65,10 +65,10 @@ lib.makeScope pkgs.newScope (self: {
     { name = "metrics-reporter-prometheus.jar"; path = self.plugins.metrics-reporter-prometheus; }
   ];
 
-  ci-next = pkgs.linkFarm "gerrit-${self.gerrit_3_11.version}-ci" [
-    { name = "gerrit"; path = self.gerrit_3_11; }
-    { name = "code-owners.jar"; path = self.plugins_3_11.code-owners; }
-    { name = "oauth.jar"; path = self.plugins_3_11.oauth; }
-    { name = "metrics-reporter-prometheus.jar"; path = self.plugins_3_11.metrics-reporter-prometheus; }
+  ci-next = pkgs.linkFarm "gerrit-${self.gerrit_3_12.version}-ci" [
+    { name = "gerrit"; path = self.gerrit_3_12; }
+    { name = "code-owners.jar"; path = self.plugins_3_12.code-owners; }
+    { name = "oauth.jar"; path = self.plugins_3_12.oauth; }
+    { name = "metrics-reporter-prometheus.jar"; path = self.plugins_3_12.metrics-reporter-prometheus; }
   ];
 })
