@@ -17,7 +17,7 @@ let
 in
 (buildBazelPackageNG rec {
   pname = "gerrit";
-  version = "3.12.0";
+  version = "3.12.2";
 
   bazel = bazel_7;
 
@@ -26,7 +26,7 @@ in
     rev = "v${version}";
     fetchSubmodules = true;
     deepClone = true;
-    hash = "sha256-CeZlvN9f1qZNhsPnKxFcHsI1Qvpsq1x/e/m5/D7YhGc=";
+    hash = "sha256-E3Fg52TGH7nsSim+DIT4jVoaXmMfqtsITOjjfE4QJDE=";
   }).overrideAttrs (_: {
     env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
       pushd "$dir" >/dev/null
@@ -38,7 +38,7 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-5bjU3/pOYhvMO1S5RqQc0VC3ecXirs+vIujOOhuTnLo=";
+  depsHash = "sha256-BLYLtSNqbNwoWDYswMiLBP0gZH8u1FBa6mpkMKSKxyg=";
 
   patches = [
     ./0001-Revert-Remove-net.i2p.crypto-eddsa.patch
