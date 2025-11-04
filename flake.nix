@@ -21,6 +21,12 @@
       inherit (pkgSet) plugins_3_11 plugins_3_12;
     });
 
+    hydraJobs = forAllSystems (system: let
+      pkgSet = import ./default.nix { pkgs = nixpkgs.legacyPackages."${system}"; };
+    in {
+      inherit (pkgSet) ci ci-next;
+    });
+
     devShells = forAllSystems (system: {
       default = import ./shell.nix { pkgs = nixpkgs.legacyPackages."${system}"; };
     });
