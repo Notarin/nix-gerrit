@@ -26,7 +26,7 @@ in
     rev = "v${version}";
     fetchSubmodules = true;
     deepClone = true;
-    hash = "sha256-E3Fg52TGH7nsSim+DIT4jVoaXmMfqtsITOjjfE4QJDE=";
+    hash = "sha256-busIA/bXDJPVJToFyYELHipd4D194oZqwALOtArenPg=";
   }).overrideAttrs (_: {
     env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
       pushd "$dir" >/dev/null
