@@ -1,0 +1,19 @@
+diff --git c/polygerrit-ui/package.json i/polygerrit-ui/package.json
+index 1707aa339c..511c65a095 100644
+--- c/polygerrit-ui/package.json
++++ i/polygerrit-ui/package.json
+@@ -19,7 +19,6 @@
+     "source-map-support": "^0.5.21"
+   },
+   "scripts": {
+-    "postinstall": "playwright install",
+     "test": "web-test-runner",
+     "test:screenshot": "web-test-runner --run-screenshots",
+     "test:screenshot-update": "web-test-runner --run-screenshots --update-screenshots --files",
+@@ -32,4 +31,4 @@
+   },
+   "license": "Apache-2.0",
+   "private": true
+-}
+\ No newline at end of file
++}
