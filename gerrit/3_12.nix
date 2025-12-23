@@ -26,6 +26,7 @@ in
     rev = "v${version}";
     fetchSubmodules = true;
     deepClone = true;
+    fetchTags = true;
     hash = "sha256-1qZVXCyvHqXOh4h7U4MKPXtsIcgy8ONxGEuQvizMl7g=";
   }).overrideAttrs (_: {
     env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
