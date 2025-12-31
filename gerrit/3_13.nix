@@ -42,6 +42,7 @@ in
   depsHash = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
 
   patches = [
+    ./patches/3_13/0001-nuke-AI-features.patch
     ./patches/common/0002-Syntax-highlight-rules.pl.patch
     ./patches/3_13/0003-Add-titles-to-CLs-over-HTTP_313.patch
     ./patches/3_13/0004-Drop-Playwright-Install.patch 
