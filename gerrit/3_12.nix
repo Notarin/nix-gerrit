@@ -42,9 +42,9 @@ in
   depsHash = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
 
   patches = [
-    ./0001-Revert-Remove-net.i2p.crypto-eddsa.patch
-    ./0002-Syntax-highlight-rules.pl.patch
-    ./0003-Add-titles-to-CLs-over-HTTP.patch
+    ./patches/common/0002-Syntax-highlight-rules.pl.patch
+    ./patches/3_12/0001-Revert-Remove-net.i2p.crypto-eddsa.patch
+    ./patches/3_12/0003-Add-titles-to-CLs-over-HTTP.patch
   ];
 
   nativeBuildInputs = [
