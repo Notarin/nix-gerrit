@@ -7,13 +7,13 @@
 }:
 let
   depsHashes = {
-    "3_11" = {
-      "oauth" = "sha256-ipqfQcQ35u2ESgyzKDMXZiuO7ybrmQrsOL6tZW9ypdM=";
-      "metric-reporter-prometheus" = "sha256-9e8ACYoqp6VVJ60r055VN++Q9Rn/1OL5KnKtR3gv3tc=";
-    };
     "3_12" = {
       "oauth" = "sha256-QuKpMFPp26X9tC4eqQr2P1CAfsD5IVFtqbwcoXBsD+c=";
       "metric-reporter-prometheus" = "sha256-2ibJ17/ESOpcwtBlJftCnW0hWbT0dfmowA72eZL43zc=";
+    };
+    "3_13" = {
+      "oauth" = "sha256-pikzl11Kl+bc8l3RZsH+G/6tJ/xrScC9FO6kNNJSyOI=";
+      "metric-reporter-prometheus" = "sha256-vN2VZOGjefwsqWsAXX1pOuRla7RrZQEBOndb/mmhfb0=";
     };
   };
   mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
@@ -32,31 +32,31 @@ let
 in
 lib.makeScope pkgs.newScope (self: {
   buildBazelPackageNG = self.callPackage ./buildBazelPackageNG { };
-  inherit (self.callPackage ./gerrit { }) gerrit_3_11 gerrit_3_12;
+  inherit (self.callPackage ./gerrit { }) gerrit_3_12 gerrit_3_13;
 
-  buildGerrit311BazelPlugin = self.callPackage ./plugins/builder.nix {
-    gerrit = self.gerrit_3_11;
-  };
   buildGerrit312BazelPlugin = self.callPackage ./plugins/builder.nix {
     gerrit = self.gerrit_3_12;
   };
-
-  plugins_3_11 = mkPluginSet { 
-    inherit self;
-    depsHashes = depsHashes."3_11";
-    variant = "3_11";
-    buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
+  buildGerrit313BazelPlugin = self.callPackage ./plugins/builder.nix {
+    gerrit = self.gerrit_3_13;
   };
+
   plugins_3_12 = mkPluginSet { 
     inherit self;
     depsHashes = depsHashes."3_12";
     variant = "3_12";
     buildGerritBazelPlugin = self.buildGerrit312BazelPlugin;
   };
+  plugins_3_13 = mkPluginSet { 
+    inherit self;
+    depsHashes = depsHashes."3_13";
+    variant = "3_13";
+    buildGerritBazelPlugin = self.buildGerrit313BazelPlugin;
+  };
 
-  buildGerritBazelPlugin = self.buildGerrit311BazelPlugin;
-  gerrit = self.gerrit_3_11;
-  plugins = self.plugins_3_11;
+  buildGerritBazelPlugin = self.buildGerrit312BazelPlugin;
+  gerrit = self.gerrit_3_12;
+  plugins = self.plugins_3_12;
 
   ci = pkgs.linkFarm "gerrit-${self.gerrit.version}-ci" [
     { name = "gerrit"; path = self.gerrit; }
@@ -65,10 +65,10 @@ lib.makeScope pkgs.newScope (self: {
     { name = "metrics-reporter-prometheus.jar"; path = self.plugins.metrics-reporter-prometheus; }
   ];
 
-  ci-next = pkgs.linkFarm "gerrit-${self.gerrit_3_12.version}-ci" [
-    { name = "gerrit"; path = self.gerrit_3_12; }
-    { name = "code-owners.jar"; path = self.plugins_3_12.code-owners; }
-    { name = "oauth.jar"; path = self.plugins_3_12.oauth; }
-    { name = "metrics-reporter-prometheus.jar"; path = self.plugins_3_12.metrics-reporter-prometheus; }
+  ci-next = pkgs.linkFarm "gerrit-${self.gerrit_3_13.version}-ci" [
+    { name = "gerrit"; path = self.gerrit_3_13; }
+    { name = "code-owners.jar"; path = self.plugins_3_13.code-owners; }
+    { name = "oauth.jar"; path = self.plugins_3_13.oauth; }
+    { name = "metrics-reporter-prometheus.jar"; path = self.plugins_3_13.metrics-reporter-prometheus; }
   ];
 })

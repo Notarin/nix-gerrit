@@ -17,7 +17,7 @@ let
 in
 (buildBazelPackageNG rec {
   pname = "gerrit";
-  version = "3.11.3";
+  version = "3.13.1";
 
   bazel = bazel_7;
 
@@ -27,7 +27,7 @@ in
     fetchSubmodules = true;
     deepClone = true;
     fetchTags = true;
-    hash = "sha256-O7nzyC/ZgF59rRAmsBzSeibZZdIdXMTz6CmE1u1M/Os=";
+    hash = "sha256-0vPDj86LC1ptg2GDhDz8J8shKjIWhWDrVxXnXPbqzrs=";
   }).overrideAttrs (_: {
     env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
       pushd "$dir" >/dev/null
@@ -39,11 +39,12 @@ in
       find "$dir" -name .git -print0 | xargs -0 rm -rf
     '';
   });
-  depsHash = "sha256-68Mj0UAUcRYkHEDLSeeP07Qnb+vGMh9CXpZvCOf5PFw=";
+  depsHash = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
 
   patches = [
-    ./0002-Syntax-highlight-rules.pl.patch
-    ./0003-Add-titles-to-CLs-over-HTTP.patch
+    ./patches/common/0002-Syntax-highlight-rules.pl.patch
+    ./patches/3_13/0003-Add-titles-to-CLs-over-HTTP_313.patch
+    ./patches/3_13/0004-Drop-Playwright-Install.patch 
   ];
 
   nativeBuildInputs = [

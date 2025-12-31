@@ -3,6 +3,6 @@
 
 { callPackage }:
 {
-  gerrit_3_11 = callPackage ./3_11.nix { };
   gerrit_3_12 = callPackage ./3_12.nix { };
+  gerrit_3_13 = callPackage ./3_13.nix { };
 }
