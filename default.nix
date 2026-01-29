@@ -9,10 +9,12 @@ let
   depsHashes = {
     "3_12" = {
       "oauth" = "sha256-QuKpMFPp26X9tC4eqQr2P1CAfsD5IVFtqbwcoXBsD+c=";
+      "readonly" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
       "metric-reporter-prometheus" = "sha256-2ibJ17/ESOpcwtBlJftCnW0hWbT0dfmowA72eZL43zc=";
     };
     "3_13" = {
       "oauth" = "sha256-pikzl11Kl+bc8l3RZsH+G/6tJ/xrScC9FO6kNNJSyOI=";
+      "readonly" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
       "metric-reporter-prometheus" = "sha256-vN2VZOGjefwsqWsAXX1pOuRla7RrZQEBOndb/mmhfb0=";
     };
   };
@@ -23,6 +25,10 @@ let
     oauth = self.callPackage ./plugins/oauth {
       inherit buildGerritBazelPlugin;
       depsHash = depsHashes.oauth;
+    };
+    readonly = self.callPackage ./plugins/readonly {
+      inherit buildGerritBazelPlugin;
+      depsHash = depsHashes.readonly;
     };
     metrics-reporter-prometheus = self.callPackage ./plugins/metrics-reporter-prometheus {
       inherit buildGerritBazelPlugin;
@@ -62,6 +68,7 @@ lib.makeScope pkgs.newScope (self: {
     { name = "gerrit"; path = self.gerrit; }
     { name = "code-owners.jar"; path = self.plugins.code-owners; }
     { name = "oauth.jar"; path = self.plugins.oauth; }
+    { name = "readonly.jar"; path = self.plugins.readonly; }
     { name = "metrics-reporter-prometheus.jar"; path = self.plugins.metrics-reporter-prometheus; }
   ];
 
