@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2024 The nix-gerrit Authors <git@lukegb.com>
+# SPDX-FileCopyrightText: 2026 Yureka Lilian <yureka@cyberchaos.dev>
 # SPDX-License-Identifier: MIT
 
 { buildBazelPackageNG
@@ -10,6 +11,12 @@
 , curl
 , unzip
 , extraBazelPackageAttrs ? {}
+
+
+, version
+, srcHash
+, depsHash
+, versionInfo
 }:
 
 let
@@ -17,33 +24,27 @@ let
 in
 (buildBazelPackageNG rec {
   pname = "gerrit";
-  version = "3.13.1";
+  inherit version;
 
   bazel = bazel_7;
 
-  src = (fetchgit {
+  src = fetchgit {
     url = "https://gerrit.googlesource.com/gerrit";
     rev = "v${version}";
     fetchSubmodules = true;
-    deepClone = true;
-    fetchTags = true;
-    hash = "sha256-0vPDj86LC1ptg2GDhDz8J8shKjIWhWDrVxXnXPbqzrs=";
-  }).overrideAttrs (_: {
-    env.NIX_PREFETCH_GIT_CHECKOUT_HOOK = ''
-      pushd "$dir" >/dev/null
-      ${python3}/bin/python tools/workspace_status_release.py | sort > .version
-      popd >/dev/null
-
-      # delete all the .git; we can't do this using fetchgit if deepClone is on,
-      # but our mischief has already been achieved by the python command above :)
-      find "$dir" -name .git -print0 | xargs -0 rm -rf
-    '';
-  });
-  depsHash = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
+    hash = srcHash;
+  };
+  inherit depsHash;
 
   patches = [
-    ./patches/3_13/0001-nuke-AI-features.patch
     ./patches/common/0002-Syntax-highlight-rules.pl.patch
+  ]
+  ++ lib.optionals (lib.versions.majorMinor version == "3.12") [
+    ./patches/3_12/0001-Revert-Remove-net.i2p.crypto-eddsa.patch
+    ./patches/3_12/0003-Add-titles-to-CLs-over-HTTP.patch
+  ]
+  ++ lib.optionals (lib.versions.majorMinor version == "3.13") [
+    ./patches/3_13/0001-nuke-AI-features.patch
     ./patches/3_13/0003-Add-titles-to-CLs-over-HTTP_313.patch
     ./patches/3_13/0004-Drop-Playwright-Install.patch 
   ];
@@ -66,6 +67,8 @@ in
 
   prePatch = ''
     rm .bazelversion
+    cat ${builtins.toFile ".version" (lib.concatStringsSep "\n" versionInfo)} > .version
+    echo >> .version
 
     ln -sf ${./bazelrc} user.bazelrc
     # referencing $HOME is a bad idea and fails! https://git.lix.systems/the-distro/nix-gerrit/issues/11

@@ -1,0 +1,44 @@
+{
+    "3_12": {
+        "depsHash": "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=",
+        "srcHash": "sha256-114Jw3q+2v8zBIhI9W3GXmmf9lLQYg1Q0jvXJQ0hSxk=",
+        "version": "3.12.3",
+        "versionInfo": [
+            "STABLE_BUILD_CODEMIRROR-EDITOR_LABEL v3.12.3",
+            "STABLE_BUILD_COMMIT-MESSAGE-LENGTH-VALIDATOR_LABEL v3.12.3",
+            "STABLE_BUILD_DELETE-PROJECT_LABEL v3.12.3",
+            "STABLE_BUILD_DOWNLOAD-COMMANDS_LABEL v3.12.3",
+            "STABLE_BUILD_GERRIT_LABEL v3.12.3",
+            "STABLE_BUILD_GITILES_LABEL v3.12.3",
+            "STABLE_BUILD_HOOKS_LABEL v3.12.3",
+            "STABLE_BUILD_JAVA-PRETTIFY_LABEL v3.12.3",
+            "STABLE_BUILD_JGIT_LABEL v7.4.0.202507080956-m1-15-g010858e24",
+            "STABLE_BUILD_PLUGIN-MANAGER_LABEL v3.12.3",
+            "STABLE_BUILD_REPLICATION_LABEL v3.12.3",
+            "STABLE_BUILD_REVIEWNOTES_LABEL v3.12.3",
+            "STABLE_BUILD_SINGLEUSERGROUP_LABEL v3.12.3",
+            "STABLE_BUILD_WEBHOOKS_LABEL v3.12.3"
+        ]
+    },
+    "3_13": {
+        "depsHash": "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=",
+        "srcHash": "sha256-KlOyEkUliSunIjx4DDctWk5O4wPjF13jLrkYiaEJd7A=",
+        "version": "3.13.1",
+        "versionInfo": [
+            "STABLE_BUILD_CODEMIRROR-EDITOR_LABEL v3.13.1",
+            "STABLE_BUILD_COMMIT-MESSAGE-LENGTH-VALIDATOR_LABEL v3.13.1",
+            "STABLE_BUILD_DELETE-PROJECT_LABEL v3.13.1",
+            "STABLE_BUILD_DOWNLOAD-COMMANDS_LABEL v3.13.1",
+            "STABLE_BUILD_GERRIT_LABEL v3.13.1",
+            "STABLE_BUILD_GITILES_LABEL v3.13.1",
+            "STABLE_BUILD_HOOKS_LABEL v3.13.1",
+            "STABLE_BUILD_JAVA-PRETTIFY_LABEL v3.13.1",
+            "STABLE_BUILD_JGIT_LABEL v3.12.6",
+            "STABLE_BUILD_PLUGIN-MANAGER_LABEL v3.13.1",
+            "STABLE_BUILD_REPLICATION_LABEL v3.13.1",
+            "STABLE_BUILD_REVIEWNOTES_LABEL v3.13.1",
+            "STABLE_BUILD_SINGLEUSERGROUP_LABEL v3.13.1",
+            "STABLE_BUILD_WEBHOOKS_LABEL v3.13.1"
+        ]
+    }
+}

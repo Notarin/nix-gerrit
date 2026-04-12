@@ -12,7 +12,6 @@
 , depsHash ? null 
 , overlayPluginCmd ? ''
     cp -R "${src}" "$out/plugins/${name}"
-    echo "STABLE_BUILD_${lib.toUpper name}_LABEL v${version}-nix${if patches != [] then "-dirty" else ""}" >> $out/.version
   ''
 , postOverlayPlugin ? ""
 , postPatch ? ""
@@ -38,6 +37,7 @@
 }).overrideAttrs (super: {
   postPatch = ''
     ${super.postPatch or ""}
+    echo "STABLE_BUILD_${lib.toUpper name}_LABEL v${version}-nix${if patches != [] then "-dirty" else ""}" >> .version
     pushd "plugins/${name}"
     ${lib.concatMapStringsSep "\n" (patch: ''
       patch -p1 < ${patch}
