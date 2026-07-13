@@ -6,7 +6,7 @@
 , lib ? pkgs.lib
 }:
 let
-  depsHashes = {
+  depsHashes = { # Fake hash (for convenience): sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
     "3_12" = {
       "oauth" = "sha256-QuKpMFPp26X9tC4eqQr2P1CAfsD5IVFtqbwcoXBsD+c=";
       "download-commands" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
