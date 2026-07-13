@@ -13,6 +13,7 @@ let
       "metric-reporter-prometheus" = "sha256-2ibJ17/ESOpcwtBlJftCnW0hWbT0dfmowA72eZL43zc=";
       "download-commands" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
       "autosubmitter" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
+      "checks-jenkins" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
     };
     "3_13" = {
       "oauth" = "sha256-pikzl11Kl+bc8l3RZsH+G/6tJ/xrScC9FO6kNNJSyOI=";
@@ -20,6 +21,7 @@ let
       "metric-reporter-prometheus" = "sha256-vN2VZOGjefwsqWsAXX1pOuRla7RrZQEBOndb/mmhfb0=";
       "download-commands" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
       "autosubmitter" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
+      "checks-jenkins" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
     };
   };
   mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
@@ -45,6 +47,10 @@ let
     metrics-reporter-prometheus = self.callPackage ./plugins/metrics-reporter-prometheus {
       inherit buildGerritBazelPlugin;
       depsHash = depsHashes.metric-reporter-prometheus;
+    };
+    checks-jenkins = self.callPackage ./plugins/checks-jenkins {
+      inherit buildGerritBazelPlugin;
+      depsHash = depsHashes."checks-jenkins";
     };
   };
 in
