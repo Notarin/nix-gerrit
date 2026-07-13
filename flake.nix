@@ -17,7 +17,7 @@
     in {
       default = pkgSet.gerrit;
       inherit (pkgSet) gerrit gerrit_3_12 gerrit_3_13;
-      inherit (pkgSet.plugins) oauth code-owners metrics-reporter-prometheus readonly download-commands autosubmitter checks-jenkins;
+      inherit (pkgSet.plugins) oauth code-owners metrics-reporter-prometheus readonly download-commands autosubmitter checks-jenkins events-log;
       inherit (pkgSet) plugins_3_12 plugins_3_13;
     });
 

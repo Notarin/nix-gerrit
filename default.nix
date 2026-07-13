@@ -14,6 +14,7 @@ let
       "download-commands" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
       "autosubmitter" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
       "checks-jenkins" = "sha256-kOYdFjMrOJkE+9Sq9Al7Ixhd8LbBJZC0ZUOvrl3n6Dk=";
+      "events-log" = "sha256-EcQLAfyaaCZOevMcREc9P71I2nL+A4+fw1n+bMvhc1E=";
     };
     "3_13" = {
       "oauth" = "sha256-pikzl11Kl+bc8l3RZsH+G/6tJ/xrScC9FO6kNNJSyOI=";
@@ -22,6 +23,7 @@ let
       "download-commands" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
       "autosubmitter" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
       "checks-jenkins" = "sha256-nNIfYW18oI9CfMmI/HVtnOatxUhMcXYqiPWabkdpoGk=";
+      "events-log" = "sha256-WRAjNcCGFFVhxbDcBFbn/f0maUC/rVhI3I87bNmqlRQ=";
     };
   };
   mkPluginSet = { self, variant, depsHashes, buildGerritBazelPlugin }: {
@@ -51,6 +53,10 @@ let
     checks-jenkins = self.callPackage ./plugins/checks-jenkins {
       inherit buildGerritBazelPlugin;
       depsHash = depsHashes."checks-jenkins";
+    };
+    events-log = self.callPackage ./plugins/events-log {
+      inherit buildGerritBazelPlugin;
+      depsHash = depsHashes."events-log";
     };
   };
 in
